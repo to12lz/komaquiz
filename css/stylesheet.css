@@ -1,0 +1,21 @@
+.container{
+    max-width: 2000px;
+    width: 90%;
+    padding: 50px 5% 50px 5%;
+    margin: 0 auto;
+  }
+
+.member {
+    float:left;
+    width:100px;
+    height:60px;
+    padding:10px;
+    margin:5px;
+    /*border:2px solid #5c5c5c;*/
+    border-radius:5px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .5)
+  }
+
+.plus{
+    border:2px solid #d8d8d8;
+}
