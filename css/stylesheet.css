@@ -1,21 +1,93 @@
-.container{
-    max-width: 2000px;
+body {
+    margin: 0;
+    }
+
+.participants {
+    margin: 0 auto 0 auto;
+    padding:50px 50px 50px 50px;
     width: 90%;
-    padding: 50px 5% 50px 5%;
-    margin: 0 auto;
-  }
+}
+
+
+.list {
+    
+    display: flex;
+    justify-content: center;
+    
+}
 
 .member {
     float:left;
-    width:100px;
-    height:60px;
-    padding:10px;
+    text-align:center;
+    display: block;
+    width:15%;
+    aspect-ratio: 1.618/1;
+    padding:0;
     margin:5px;
-    /*border:2px solid #5c5c5c;*/
     border-radius:5px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, .5)
-  }
+    box-shadow: 0 0 10px rgba(105, 105, 105, 0.5);
+}
+.name{
+    
+    margin:5% 5% 2.5% 5%;
+    padding-bottom: 2.5%;
+    border-bottom:2px solid #979797;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.counter {
+    display:flex;
+    justify-content: center;
+}
+
+.cnt {
+    margin: 3px 10px 0px 10px;
+    width:20%;
+    cursor: pointer;
+    user-select: none;
+    transition:1s all;
+}
+
+.cnt:hover{
+    transform: 50px,50px;
+}
+
+.crct{
+    color:green;
+    
+}
+.incrct{
+    color:red;
+}
+
+.cntjimaku {
+    display:flex;
+    justify-content: center;
+    font-size: small;
+}
+.crctjimaku{
+    color:green;
+    
+}
+.incrctjimaku{
+    color:red;
+}
 
 .plus{
-    border:2px solid #d8d8d8;
+    text-align:center;
+    padding:20px 0;
+    color:#979797;
+}
+
+footer{
+    position: absolute;/*←絶対位置*/
+    bottom: 0; /*下に固定*/
+    /*footerの装飾*/
+    width: 100%;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: center;
+    padding: 30px 0;
+    box-shadow: 0 0 10px rgba(105, 105, 105, 0.5);
 }
