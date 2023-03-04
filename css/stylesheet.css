@@ -1,3 +1,7 @@
+html,body{
+    height:100%
+}
+
 body {
     margin: 0;
     }
@@ -10,7 +14,7 @@ body {
 
 
 .list {
-    
+    margin-bottom: 300px;
     display: flex;
     justify-content: center;
     
@@ -80,8 +84,12 @@ body {
     color:#979797;
 }
 
+.plusbtn{
+    margin-bottom: 140px;
+}
+
 footer{
-    position: absolute;/*←絶対位置*/
+    position: fixed;/*←絶対位置*/
     bottom: 0; /*下に固定*/
     /*footerの装飾*/
     width: 100%;
