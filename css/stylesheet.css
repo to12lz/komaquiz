@@ -48,7 +48,7 @@ body {
 .cnt {
     margin: 3px 10px 0px 10px;
     width:20%;
-    cursor: pointer;
+    
     user-select: none;
     transition:1s all;
 }
@@ -59,10 +59,12 @@ body {
 
 .crct{
     color:green;
+    cursor: pointer;
     
 }
 .incrct{
     color:red;
+    cursor: pointer;
 }
 
 .cntjimaku {
