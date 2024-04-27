@@ -35,6 +35,8 @@
   <link rel="manifest" href="/my.webmanifest">
   <meta name="theme-color" content="#FF00FF">
 
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
 <style>
     #contextmenu{
         display: none;
@@ -72,106 +74,195 @@
     </div>
 
     <div class="participants">
-        <div id="list">
-            <div class="member plusbtn" onclick="clickPlus(this)">
-                <p class ="plus">+</p>
-            </div>
+        <div id="sort-table">
         </div>
     </div>
 
     <footer>
-        <button onclick="Reset()">Reset</button>
+        <button onclick="clickPlus()">参加者を追加</button>
+        <select id="rule">
+            <option value="nmmb" selected>N〇M×</option>
+            <option value="p1m1">+1/-1</option>
+            <option value="tbt">10by10</option>
+        </select>
+        <button onclick="Reset()">点数をリセット</button>
     </footer>
 
     <script type="text/javascript">
     'use strict';
 
+    //リロード時の処理
+    window.addEventListener('load', function() {
+        let ruleSelect = document.getElementById('rule');
+        ruleSelect.value = 'nmmb'; // 初期値を 'nmmb'(N〇M×) に設定する
+    });
+
+    //html要素を取得をしてSortableJSに設定します
+    const sortElement = document.getElementById('sort-table');
+    Sortable.create(sortElement);
+
+    const rule = document.getElementById("rule");
+    rule.addEventListener("change", function() {
+    ruleChange();
+    });
+
     
     let nowmember;
 
-    function clickPlus(obj){
+    function clickPlus(){
         const name = window.prompt('名前を入れてください');
-        if(name !== null && name !== false){
-            let div = 
-            `<div class="member">
+
+        if(name == '' || name == null)return;
+
+        let div;
+
+        if(ruleSelect.value == 'nmmb'){
+            div = `<div class="member">
                 <h2 class="name">${name}</h2>
+                <div class="cntjimaku">
+                    <h3 class="cnt crctjimaku">〇</h3>
+                    <h3 class="cnt incrctjimaku">×</h3>
+                </div>
                 <div class="counter">
                     <h1 class="cnt crct" onclick="countUp(this)">0</h1>
                     <h1 class="cnt incrct" onclick="countUp(this)">0</h1>
                 </div>
+            </div>`
+        }else{
+            div = `<div class="member">
+                <h2 class="name">${name}</h2>
+                <h1 class = "point">0<span style="font-size: 15px;">pts</span></h1>
                 <div class="cntjimaku">
-                    <p class="cnt crctjimaku">correct</p>
-                    <p class="cnt incrctjimaku">wrong</p>
+                    <h3 class="cnt crctjimaku">〇</h3>
+                    <h3 class="cnt incrctjimaku">×</h3>
+                </div>
+                <div class="counter">
+                    <h1 class="cnt crct" onclick="countUp(this)" style="font-size: 24px;">0</h1>
+                    <h1 class="cnt incrct" onclick="countUp(this)" style="font-size: 24px;">0</h1>
                 </div>
             </div>`
-            obj.insertAdjacentHTML('beforebegin', div);
+        }
+        document.getElementById("sort-table").insertAdjacentHTML('beforeend',div);
 
-            let buts = [...document.querySelectorAll('.crct, .incrct')];
-            for(let i=0;i<2;i++){
-                let target = buts.slice(-(i+1))[0];
-                target.addEventListener("contextmenu",function(e){
-                    e.preventDefault();
-                    e.stopPropagation();
-                    n = target.innerHTML;
-                    n--;
-                    target.innerHTML = n;
-                    return false;
-                });
-            }
-
-            let mems = [...document.querySelectorAll('.member')];
-            let target = mems.slice(-2)[0];
+        let buts = [...document.querySelectorAll('.crct, .incrct')];
+        for(let i=0;i<2;i++){
+            let target = buts.slice(-(i+1))[0];
             target.addEventListener("contextmenu",function(e){
                 e.preventDefault();
-                document.getElementById('contextmenu').style.left=e.pageX+"px";
-                document.getElementById('contextmenu').style.top=e.pageY+"px";
-                document.getElementById('contextmenu').style.display="block";
-                nowmember = target;
-                console.log("menu");
+                e.stopPropagation();
+                n = target.innerHTML;
+                n--;
+                target.innerHTML = n;
+                Calc(target);
                 return false;
             });
         }
+
+        let mems = [...document.querySelectorAll('.member')];
+        let target = mems.slice(-1)[0];
+        target.addEventListener("contextmenu",function(e){
+            e.preventDefault();
+            document.getElementById('contextmenu').style.left=e.pageX+"px";
+            document.getElementById('contextmenu').style.top=e.pageY+"px";
+            document.getElementById('contextmenu').style.display="block";
+            nowmember = target;
+            return false;
+        });
     }
 
+    //〇×カウント用変数
     let n;
 
+    //〇×を増やす
     function countUp(obj){
         n = obj.innerHTML;
         n++;
         obj.innerHTML = n;
+        Calc(obj);
     }
-
-
-    /*
-    function countDown(obj){
-
-        /*
-        n = obj.innerHTML;
-        if(n>0){
-            n--;
-            obj.innerHTML = n;
-        }
-        
-        console.log("right");
-
-        return false;
-    */
     
+    //得点の計算
+    function Calc(obj){
+        if(ruleSelect.value == 'nmmb')return;
+        let maru = obj.parentNode.querySelector(".crct").textContent;// 正解のポイントを取得
+        let batu = obj.parentNode.querySelector(".incrct").textContent;// 不正解のポイントを取得
+        let str = obj.parentNode.parentNode.querySelector(".point").textContent;
+        let nowPnt = parseInt(str);//現在のポイントを取得
+        let pnt;
+        if(ruleSelect.value == 'p1m1'){
+            pnt = Number(maru)-Number(batu);
+        }
+        if(ruleSelect.value == 'tbt'){
+            pnt = Number(maru)*(10-Number(batu));
+        }
+        if(ruleSelect.value == 'tud'){
+            console.log("要素のクラス:", obj.classList);
+            if (obj.classList.contains("incrct")){
+                pnt = 0;
+            }else{
+                pnt = nowPnt+1;
+            }
+        }
+        if(ruleSelect.value != "nmmb"){
+        let pointElement = obj.parentNode.parentNode.querySelector(".point");
+        pointElement.innerHTML = String(pnt) + "<span style='font-size: 15px;'>pts</span>";
+        }
+    }
+    
+    //得点リセット
     function Reset(){
-        let target = document.querySelectorAll(".crct, .incrct");
-        for(let i of target){
+        let target1 = document.querySelectorAll(".crct, .incrct");
+        for(let i of target1){
             i.innerHTML = "0";
+        }
+        let target2 = document.querySelectorAll(".point");
+        for(let i of target2){
+            i.innerHTML = "0<span style='font-size: 15px;'>pts</span>";
         }
     }
 
     function namechange(obj){
-        const name = window.prompt('名前を入れてください');
+        let defname = obj.querySelector("h2").textContent;
+        const name = window.prompt('名前を入れてください',defname);
+        if(name == '' || name == null)return;
         obj.firstElementChild.innerHTML = name;
     }
 
     function deletemember(obj){
         obj.remove();
     }
+
+    function ruleChange(){
+        Reset();
+        if(ruleSelect.value == 'nmmb'){
+            console.log("aaa");
+            let list_elements = document.querySelectorAll(".point");
+            for (let element of list_elements) {
+                element.remove();
+            }
+            let cnt = document.querySelectorAll(".crct, .incrct");
+            for(let i of cnt){
+                i.style.fontSize = "36px";
+            }
+
+        }else{
+            let parentElement = document.querySelectorAll(".member");
+            for (let i = 0; i < parentElement.length; i++) {
+                if(parentElement[i].querySelector(".point") === null){
+                    const newElement = document.createElement("h1");
+                    newElement.className = "point";
+                    newElement.innerHTML = "0<span style='font-size: 15px;'>pts</span>";
+                    const ref = parentElement[i].querySelector(".cntjimaku");
+                    parentElement[i].insertBefore(newElement,ref);
+                }
+            }
+            let cnt = document.querySelectorAll(".crct, .incrct");
+            for(let i of cnt){
+                i.style.fontSize = "24px";
+            }
+        }
+    }
+    let ruleSelect = document.getElementById('rule');
 
     </script>
 </body>
