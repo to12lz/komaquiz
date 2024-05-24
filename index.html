@@ -83,9 +83,10 @@
         <select id="rule">
             <option value="nmmb" selected>N〇M×</option>
             <option value="p1m1">+1/-1</option>
-            <option value="tbt">10by10</option>
+            <option value="mbn">MbyN</option>
         </select>
-        <button onclick="Reset()">点数をリセット</button>
+        <div id="mbn-input-container" class="footer-item"></div>
+        <button class="reset-button" onclick="Reset()">点数をリセット</button>
     </footer>
 
     <script type="text/javascript">
@@ -180,21 +181,26 @@
         obj.innerHTML = n;
         Calc(obj);
     }
+
+    //MbyN初期値
+    let defPoint = 10;
     
     //得点の計算
     function Calc(obj){
         if(ruleSelect.value == 'nmmb')return;
+
         let maru = obj.parentNode.querySelector(".crct").textContent;// 正解のポイントを取得
         let batu = obj.parentNode.querySelector(".incrct").textContent;// 不正解のポイントを取得
-        let str = obj.parentNode.parentNode.querySelector(".point").textContent;
-        let nowPnt = parseInt(str);//現在のポイントを取得
+        let nowPnt = parseInt(obj.parentNode.parentNode.querySelector(".point").textContent);//現在のポイントを取得
         let pnt;
+
         if(ruleSelect.value == 'p1m1'){
             pnt = Number(maru)-Number(batu);
         }
-        if(ruleSelect.value == 'tbt'){
-            pnt = Number(maru)*(10-Number(batu));
+        if(ruleSelect.value == 'mbn'){
+            pnt = Number(maru)*(defPoint-Number(batu));
         }
+        /*
         if(ruleSelect.value == 'tud'){
             console.log("要素のクラス:", obj.classList);
             if (obj.classList.contains("incrct")){
@@ -203,10 +209,11 @@
                 pnt = nowPnt+1;
             }
         }
-        if(ruleSelect.value != "nmmb"){
+        */
+
         let pointElement = obj.parentNode.parentNode.querySelector(".point");
         pointElement.innerHTML = String(pnt) + "<span style='font-size: 15px;'>pts</span>";
-        }
+
     }
     
     //得点リセット
@@ -235,7 +242,6 @@
     function ruleChange(){
         Reset();
         if(ruleSelect.value == 'nmmb'){
-            console.log("aaa");
             let list_elements = document.querySelectorAll(".point");
             for (let element of list_elements) {
                 element.remove();
@@ -259,6 +265,44 @@
             let cnt = document.querySelectorAll(".crct, .incrct");
             for(let i of cnt){
                 i.style.fontSize = "24px";
+            }
+        }
+
+        //MbyNなら入力フォームを追加、でなければ削除
+        if(ruleSelect.value == 'mbn'){
+            // "MbyN" が選択されたときに入力フォームを追加
+            if (!document.getElementById('mbn-input')) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'mbn-input';
+                input.placeholder = '初期値を入力';
+
+                const addButton = document.createElement('button');
+                addButton.textContent = '初期値を変更';
+                addButton.className = 'add-button';
+                addButton.onclick = function() {
+                    defPoint = parseInt(input.value);
+                    alert('初期値を ' + defPoint + ' に設定しました。');
+                     // 全員の点数を初期値に設定
+                    let pointElements = document.querySelectorAll('.point');
+                        pointElements.forEach(pointElement => {
+                            Calc(pointElement.parentNode.querySelector('.counter').querySelector('.crct'));
+                        });
+                };
+                document.getElementById('mbn-input-container').appendChild(input);
+                document.getElementById('mbn-input-container').appendChild(addButton);
+            }
+
+
+        } else {
+            // 他のオプションが選択されたときに入力フォームを削除
+            const mbnInput = document.getElementById('mbn-input');
+            if (mbnInput) {
+                mbnInput.remove();
+            }
+            const mbnButton = document.getElementsByClassName("add-button")[0];
+            if (mbnButton){
+                mbnButton.remove();
             }
         }
     }

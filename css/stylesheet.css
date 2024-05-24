@@ -97,24 +97,33 @@ body {
 }
 
 footer{
+    display: flex;
     position: fixed;/*←絶対位置*/
     bottom: 0; /*下に固定*/
     /*footerの装飾*/
     width: 100%;
     background-color: #ffffff;
     color: #000000;
-    text-align: center;
     padding: 30px 0;
     box-shadow: 0 0 20px rgba(105, 105, 105, 0.15);
-    text-align: right;
 }
 
+
 button, select {
-    margin-right: 40px; /* ボタンやセレクトボックスの右側に余白を追加 */
+    margin: 0 20px; /* ボタンやセレクトボックスの左右に余白を追加 */
 }
+
+
+.reset-button{
+    margin-left: auto;
+}
+
+
 
 .point {
     text-align: center;
     margin:0;
     font-size: 24px;
 }
+
+input[type="text"] { width: 3em; }
